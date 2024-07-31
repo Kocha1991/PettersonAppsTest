@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 5,
+    
   },
   columnWrapper: {
     justifyContent: 'space-between',

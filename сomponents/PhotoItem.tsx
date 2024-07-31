@@ -9,9 +9,16 @@ interface PhotoItemProps {
 
 const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title }) => {
   const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
 
   const toggleLike = () => {
     setLiked(!liked);
+    if (disliked) setDisliked(false);
+  };
+
+  const toggleDislike = () => {
+    setDisliked(!disliked);
+    if (liked) setLiked(false);
   };
 
   return (
@@ -19,13 +26,22 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title }) => {
       <Image source={{ uri: thumbnailUrl }} style={styles.thumbnail} />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={toggleLike}>
-          <Icon
-            name={liked ? 'thumb-up' : 'thumb-up-off-alt'}
-            type='material'
-            color={liked ? 'tomato' : 'gray'}
-          />
-        </TouchableOpacity>
+        <View style={styles.likedContainer}>
+          <TouchableOpacity onPress={toggleLike}>
+            <Icon
+              name={liked ? 'thumb-up' : 'thumb-up-off-alt'}
+              type='material'
+              color={liked ? 'green' : 'gray'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleDislike}>
+            <Icon
+              name={disliked ? 'thumb-down' : 'thumb-down-off-alt'}
+              type='material'
+              color={disliked ? 'red' : 'gray'}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -49,12 +65,17 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     justifyContent: 'space-between',
+    padding: 5,
   },
   title: {
     fontSize: 12,
     marginBottom: 10,
   },
-  
+  likedContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 30,
+  }
 });
 
 export default PhotoItem;
