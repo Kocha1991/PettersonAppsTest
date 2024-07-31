@@ -1,24 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../types/store';
+import { addFavorite, removeFavorite } from '../types/favoritesSlice';
 
 interface PhotoItemProps {
   thumbnailUrl: string;
   title: string;
+  id: number;
 }
 
-const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title }) => {
-  const [liked, setLiked] = useState(false);
+const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
+  const dispatch = useDispatch();
+  const favorites = useSelector((state: RootState) => state.favorites.favorites);
+  const isFavorite = favorites.some(photo => photo.id === id);
+  const [liked, setLiked] = useState(isFavorite);
   const [disliked, setDisliked] = useState(false);
 
+  useEffect(() => {
+    setLiked(isFavorite);
+  }, [isFavorite]);
+
   const toggleLike = () => {
-    setLiked(!liked);
-    if (disliked) setDisliked(false);
+    if (!liked) {
+      setLiked(true);
+      setDisliked(false);
+      dispatch(addFavorite({ id, thumbnailUrl, title, albumId: 0, url: '' }));
+    } else {
+      setLiked(false);
+      dispatch(removeFavorite(id));
+    }
   };
 
   const toggleDislike = () => {
-    setDisliked(!disliked);
-    if (liked) setLiked(false);
+    if (!disliked) {
+      setDisliked(true);
+      setLiked(false);
+      if (isFavorite) {
+        dispatch(removeFavorite(id));
+      }
+    } else {
+      setDisliked(false);
+    }
   };
 
   return (
@@ -52,7 +76,6 @@ const styles = StyleSheet.create({
     width: '49%',
     padding: 3,
     borderWidth: 1,
-    borderStyle: 'solid',
     borderColor: '#ccc',
     borderRadius: 8,
     marginBottom: 10,

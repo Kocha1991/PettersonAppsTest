@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import PhotoItem from './PhotoItem';
-import { Photo } from '../types'; // Імпортуй тип
+import { Photo } from '../types/types'; // Імпортуй тип
 
 const PhotosScreen: React.FC = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -38,6 +38,7 @@ const PhotosScreen: React.FC = () => {
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
         <PhotoItem
+          id={item.id}
           thumbnailUrl={item.thumbnailUrl}
           title={item.title || 'No description'}
         />
