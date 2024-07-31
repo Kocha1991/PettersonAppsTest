@@ -4,6 +4,7 @@ import PhotoItem from './PhotoItem';
 import { useSelector } from 'react-redux';
 import { RootState } from '../types/store';
 
+
 const FavoritesScreen: React.FC = () => {
   const favorites = useSelector((state: RootState) => state.favorites.favorites);
 

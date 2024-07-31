@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+// PhotoItem.tsx
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../types/store';
 import { addFavorite, removeFavorite } from '../types/favoritesSlice';
+import FullscreenImageModal from './FullscreenImageModal';
 
 interface PhotoItemProps {
   thumbnailUrl: string;
@@ -17,6 +19,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
   const isFavorite = favorites.some(photo => photo.id === id);
   const [liked, setLiked] = useState(isFavorite);
   const [disliked, setDisliked] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     setLiked(isFavorite);
@@ -45,9 +48,19 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
     }
   };
 
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Image source={{ uri: thumbnailUrl }} style={styles.thumbnail} />
+      <TouchableOpacity onPress={openModal}>
+        <Image source={{ uri: thumbnailUrl }} style={styles.thumbnail} />
+      </TouchableOpacity>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.likedContainer}>
@@ -67,6 +80,11 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <FullscreenImageModal
+        visible={isModalVisible}
+        imageUrl={thumbnailUrl}
+        onClose={closeModal}
+      />
     </View>
   );
 };

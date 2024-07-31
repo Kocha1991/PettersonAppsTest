@@ -13,28 +13,28 @@ const Tab = createBottomTabNavigator();
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ color, size }) => {
-              let iconName: string = '';
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ color, size }) => {
+                let iconName: string = '';
 
-              if (route.name === 'Photos') {
-                iconName = 'photo';
-              } else if (route.name === 'Favorites') {
-                iconName = 'favorite';
-              }
+                if (route.name === 'Photos') {
+                  iconName = 'photo';
+                } else if (route.name === 'Favorites') {
+                  iconName = 'favorite';
+                }
 
-              return <Icon name={iconName} size={size} color={color} type='material' />;
-            },
-            tabBarActiveTintColor: 'tomato',
-            tabBarInactiveTintColor: 'gray',
-          })}
-        >
-          <Tab.Screen name="Photos" component={PhotosScreen} />
-          <Tab.Screen name="Favorites" component={FavoritesScreen} />
-        </Tab.Navigator>
-      </NavigationContainer>
+                return <Icon name={iconName} size={size} color={color} type='material' />;
+              },
+              tabBarActiveTintColor: 'tomato',
+              tabBarInactiveTintColor: 'gray',
+            })}
+          >
+            <Tab.Screen name="Photos" component={PhotosScreen} />
+            <Tab.Screen name="Favorites" component={FavoritesScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
     </Provider>
   );
 };

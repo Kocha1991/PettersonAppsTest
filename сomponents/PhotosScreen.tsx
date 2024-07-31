@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 import PhotoItem from './PhotoItem';
-import { Photo } from '../types/types'; // Імпортуй тип
+import { Photo } from '../types/types';
+import { useRefresh } from '../hooks/useRefresh';
 
 const PhotosScreen: React.FC = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/photos');
-        const data: Photo[] = await response.json();
-        setPhotos(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPhotos = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/photos');
+      const data: Photo[] = await response.json();
+      setPhotos(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPhotos();
   }, []);
+
+  const { refreshing, onRefresh } = useRefresh(fetchPhotos);
 
   if (loading) {
     return (
@@ -33,6 +37,7 @@ const PhotosScreen: React.FC = () => {
 
   return (
     <FlatList
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       style={styles.container}
       data={photos}
       keyExtractor={(item) => item.id.toString()}
