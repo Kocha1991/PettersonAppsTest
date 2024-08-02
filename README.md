@@ -15,4 +15,4 @@
 - **Photos API**: API для отримання фотографій. [Документація Photos API](https://jsonplaceholder.typicode.com/photos?albumId=1)
 - **Git**: Система контролю версій для управління кодом. [Документація Git](https://git-scm.com/book/ru/v2)
 - **React Native Elements**: Бібліотека з компонентами для React Native (необов'язкова). 
-- **npx create-expo-app my-photo-app - Бібліотека для стилізації компонентів
+- npx create-expo-app my-photo-app - Бібліотека для стилізації компонентів
