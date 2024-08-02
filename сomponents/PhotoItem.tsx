@@ -1,10 +1,9 @@
-// PhotoItem.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../types/store';
-import { addFavorite, removeFavorite } from '../types/favoritesSlice';
+import { addFavorite, removeFavorite, addDislikedPhoto, removeDislikedPhoto } from '../types/favoritesSlice';
 import FullscreenImageModal from './FullscreenImageModal';
 
 interface PhotoItemProps {
@@ -16,20 +15,29 @@ interface PhotoItemProps {
 const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.favorites);
+  const dislikedPhotos = useSelector((state: RootState) => state.favorites.dislikedPhotos);
+
   const isFavorite = favorites.some(photo => photo.id === id);
+  const isDisliked = dislikedPhotos.includes(id);
+
   const [liked, setLiked] = useState(isFavorite);
-  const [disliked, setDisliked] = useState(false);
+  const [disliked, setDisliked] = useState(isDisliked);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     setLiked(isFavorite);
   }, [isFavorite]);
 
+  useEffect(() => {
+    setDisliked(isDisliked);
+  }, [isDisliked]);
+
   const toggleLike = () => {
     if (!liked) {
       setLiked(true);
       setDisliked(false);
       dispatch(addFavorite({ id, thumbnailUrl, title, albumId: 0, url: '' }));
+      dispatch(removeDislikedPhoto(id));
     } else {
       setLiked(false);
       dispatch(removeFavorite(id));
@@ -40,11 +48,13 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ thumbnailUrl, title, id }) => {
     if (!disliked) {
       setDisliked(true);
       setLiked(false);
+      dispatch(addDislikedPhoto(id));
       if (isFavorite) {
         dispatch(removeFavorite(id));
       }
     } else {
       setDisliked(false);
+      dispatch(removeDislikedPhoto(id));
     }
   };
 
